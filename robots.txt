@@ -1,3 +1,87 @@
 User-agent: *
 Allow: /
-Sitemap: https://www.vpfashion.in/sitemap.xml 
+
+# Main Sitemaps
+Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://yourdomain.com/image-sitemap.xml
+Sitemap: https://yourdomain.com/video-sitemap.xml
+
+# Crawl-delay settings
+Crawl-delay: 10
+
+# Rate limiting
+Request-rate: 1/10
+Visit-time: 0600-2100
+
+# Allow Essential Directories
+Allow: /bible/
+Allow: /locations/
+Allow: /materials/
+Allow: /connect/
+Allow: /study-guide
+Allow: /prayer-requests
+Allow: /newsletter
+Allow: /library
+Allow: /virtual-access
+Allow: /images/
+Allow: /css/
+Allow: /js/
+Allow: /fonts/
+
+# Prevent Duplicate Content
+Disallow: /search?*
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+Disallow: /*?*page=
+Disallow: /*?*lang=
+Disallow: /*?*utm_*
+Disallow: /*?*fbclid=
+Disallow: /print/
+Disallow: /print$
+Disallow: /print/pdf$
+Disallow: /temp/
+Disallow: /test/
+Disallow: /dev/
+Disallow: /beta/
+Disallow: /draft/
+
+# Clean Parameters
+Clean-param: utm_source&utm_medium&utm_campaign
+Clean-param: fbclid
+Clean-param: gclid
+Clean-param: _ga
+
+# Specific Bot Rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 5
+
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /photos/
+Allow: /assets/images/
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 10
+
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 10
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 15
+
+# Block Bad Bots
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: Yandex
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /cgi-bin/
+Disallow: /temp/
+
+# Host Preferences
+Host: yourdomain.com

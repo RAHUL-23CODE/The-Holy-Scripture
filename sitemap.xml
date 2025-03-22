@@ -1,33 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://www.vpfashion.in/</loc>
-        <lastmod>2024-03-20</lastmod>
-        <changefreq>weekly</changefreq>
+        <loc>https://yourdomain.com/</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
+
+    <!-- Location Pages -->
     <url>
-        <loc>https://www.vpfashion.in/#collection</loc>
-        <lastmod>2024-03-20</lastmod>
+        <loc>https://yourdomain.com/locations/new-york</loc>
+        <lastmod>2024-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://www.vpfashion.in/#trends</loc>
-        <lastmod>2024-03-20</lastmod>
+        <loc>https://yourdomain.com/locations/london</loc>
+        <lastmod>2024-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://www.vpfashion.in/#about</loc>
-        <lastmod>2024-03-20</lastmod>
+        <loc>https://yourdomain.com/locations/sydney</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://yourdomain.com/locations/tokyo</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Bible Study Resources -->
+    <url>
+        <loc>https://yourdomain.com/study-guide</loc>
+        <lastmod>2024-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://www.vpfashion.in/#contact</loc>
-        <lastmod>2024-03-20</lastmod>
+        <loc>https://yourdomain.com/prayer-requests</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://yourdomain.com/newsletter</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://yourdomain.com/library</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Virtual Access -->
+    <url>
+        <loc>https://yourdomain.com/virtual-access</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Bible Books -->
+    <url>
+        <loc>https://yourdomain.com/bible/old-testament</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>never</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://yourdomain.com/bible/new-testament</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>never</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Study Materials -->
+    <url>
+        <loc>https://yourdomain.com/materials/physical</loc>
+        <lastmod>2024-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
-</urlset> 
+    <url>
+        <loc>https://yourdomain.com/materials/digital</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Social Media Links -->
+    <url>
+        <loc>https://yourdomain.com/connect/facebook</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://yourdomain.com/connect/youtube</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://yourdomain.com/connect/instagram</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://yourdomain.com/connect/twitter</loc>
+        <lastmod>2024-01-16</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.6</priority>
+    </url>
+</urlset>
