@@ -19,6 +19,8 @@
         gtag('config', 'G-XXXXXXXXXX');
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 </head>
 <body>
     <div class="dynamic-bg">
@@ -35,11 +37,66 @@
             <li></li>
         </ul>
     </div>
+    <div class="bible-background">
+        <ul class="animated-circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+        <div class="scripture-overlay"></div>
+    </div>
     <header>
         <h1>THE BIBLE</h1>
         <p class="subtitle">Join us in exploring God's Word</p>
+        <div class="founder-section">
+            <div class="founder-card">
+                <div class="founder-image">
+                    <img src="images/krishna-pandey.jpg" alt="Krishna Pandey - Founder" class="founder-photo">
+                </div>
+                <div class="founder-info">
+                    <h2>Our Founder</h2>
+                    <h3>Krishna Pandey</h3>
+                    <p class="founder-title">Founder & Head of Ministry</p>
+                    <p class="founder-vision">"Dedicated to spreading God's Word and building a community of believers who seek truth through scripture."</p>
+                </div>
+            </div>
+        </div>
+        <div class="ministry-leader">
+            <h2>Under the guidance of</h2>
+            <div class="leader-info">
+                <img src="images/krishna-pandey.jpg" alt="Krishna Pandey" class="leader-image">
+                <div class="leader-details">
+                    <h3>Krishna Pandey</h3>
+                    <p class="leader-title">Head of Ministry</p>
+                    <p class="leader-quote">"Spreading God's Word through dedicated study and service."</p>
+                </div>
+            </div>
+        </div>
     </header>
     
+    <div class="language-selector">
+        <select id="languageSelect" class="select2">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="hi">हिंदी</option>
+            <option value="zh">中文</option>
+            <option value="ar">العربية</option>
+            <option value="ru">Русский</option>
+        </select>
+    </div>
+
+    <div class="immersive-reader">
+        <button class="immersive-btn">
+            <i class="fas fa-book-reader"></i> Immersive Reader
+        </button>
+    </div>
+
     <main>
         <button id="infoButton" class="info-button">Click for Today's Message</button>
         <section class="welcome-section">
@@ -185,6 +242,16 @@
 
         <section class="photo-gallery">
             <h2>Our Community</h2>
+            <form id="photoUploadForm" class="photo-upload-form">
+                <div class="upload-container">
+                    <label for="photoInput" class="upload-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Add Photos
+                    </label>
+                    <input type="file" id="photoInput" name="photos" multiple accept="image/*" class="photo-input">
+                </div>
+                <button type="submit" class="upload-btn">Upload Photos</button>
+            </form>
             <div class="gallery-filters">
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="worship">Worship</button>
@@ -278,6 +345,22 @@
             </div>
         </section>
 
+        <section class="prayer-requests">
+            <h2>Send Your Prayer Requests</h2>
+            <div class="prayer-contact-card">
+                <div class="contact-info">
+                    <img src="images/krishna-pandey.jpg" alt="Krishna Pandey" class="contact-photo">
+                    <h3>Krishna Pandey</h3>
+                    <p>Head of Ministry</p>
+                </div>
+                <p class="prayer-intro">We are here to pray with you. Send your prayer requests anytime.</p>
+                <a href="https://wa.me/918601042799" class="whatsapp-prayer-btn" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    WhatsApp Prayer Request: +91 860 104 2799
+                </a>
+            </div>
+        </section>
+
         <section class="contact-info">
             <div class="contact-methods">
                 <h2>Contact Information</h2>
@@ -300,6 +383,28 @@
                 </a>
             </div>
         </section>
+
+        <section class="verse-search-section">
+            <h2>Search Bible Verses</h2>
+            <form class="verse-search">
+                <input type="text" placeholder="Search verses..." required>
+                <button type="submit">Search</button>
+            </form>
+            <div id="searchResults" class="search-results"></div>
+        </section>
+
+        <section class="interactive-features">
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>3D Bible Exploration</h3>
+                    <div id="bibleLands3D"></div>
+                </div>
+                <div class="feature-card">
+                    <h3>AI Study Assistant</h3>
+                    <div class="ai-chat-interface"></div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div class="voice-assistant">
@@ -307,6 +412,41 @@
             <i class="fas fa-microphone"></i>
         </button>
         <div id="voiceOutput" class="voice-output"></div>
+    </div>
+
+    <div class="translation-window">
+        <div class="translation-header">
+            <h3>Translation Panel</h3>
+            <button class="close-translation-btn">&times;</button>
+        </div>
+        <div class="translation-options">
+            <select id="sourceLanguage" class="language-select">
+                <option value="en">English</option>
+                <option value="he">Hebrew</option>
+                <option value="el">Greek</option>
+            </select>
+            <button class="swap-language-btn" title="Swap Languages">⇄</button>
+            <select id="targetLanguage" class="language-select">
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="zh">Chinese</option>
+                <option value="ar">Arabic</option>
+                <option value="hi">Hindi</option>
+            </select>
+        </div>
+        <div class="translation-content">
+            <div class="source-text">
+                <textarea id="sourceText" placeholder="Enter text to translate..."></textarea>
+            </div>
+            <div class="target-text">
+                <div id="translatedText"></div>
+            </div>
+        </div>
+        <div class="translation-footer">
+            <button class="translate-btn">Translate</button>
+            <button class="copy-btn">Copy</button>
+        </div>
     </div>
 
     <div id="modal" class="modal">

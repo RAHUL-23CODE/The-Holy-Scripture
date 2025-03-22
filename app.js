@@ -214,6 +214,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function showBookContent(book) {
+        apiService.trackProgress({
+            book: book.name,
+            chapter: 1,
+            userId: getCurrentUser().id
+        });
         const bookContent = document.getElementById('bookContent');
         const selectedBookTitle = document.getElementById('selectedBookTitle');
         const chapterSelector = document.getElementById('chapterSelector');
@@ -573,28 +578,14 @@ document.addEventListener('DOMContentLoaded', function() {
         `);
     }
 
-    function handlePrayerRequest() {
-        showResourceModal(`
-            <h3>Submit Prayer Request</h3>
-            <form id="prayerRequestForm">
-                <input type="text" placeholder="Your Name" required>
-                <input type="email" placeholder="Your Email" required>
-                <select required>
-                    <option value="">Prayer Request Type</option>
-                    <option value="personal">Personal</option>
-                    <option value="family">Family</option>
-                    <option value="healing">Healing</option>
-                    <option value="guidance">Guidance</option>
-                    <option value="other">Other</option>
-                </select>
-                <textarea placeholder="Your Prayer Request" required rows="4"></textarea>
-                <label>
-                    <input type="checkbox" required>
-                    Share with prayer group
-                </label>
-                <button type="submit">Submit Request</button>
-            </form>
-        `);
+    function handlePrayerRequest(data) {
+        apiService.submitPrayerRequest(data)
+            .then(response => {
+                showSuccessMessage('Prayer request submitted successfully');
+            })
+            .catch(error => {
+                showErrorMessage('Failed to submit prayer request');
+            });
     }
 
     function handleNewsletterSignup() {
@@ -823,4 +814,652 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize with AI and random images
     initializeGallery();
+});
+
+// Progressive Loading
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+            observer.unobserve(entry.target);
+        }
+    });
+});
+
+document.querySelectorAll('section').forEach(section => {
+    section.classList.add('fade-out');
+    observer.observe(section);
+});
+
+// Smart Search with Autocomplete
+const searchHandler = {
+    initSmartSearch() {
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', this.debounce(this.handleSearch, 300));
+        }
+    },
+
+    handleSearch(event) {
+        const query = event.target.value;
+        if (query.length > 2) {
+            this.performSearch(query);
+        }
+    },
+
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+};
+
+// Gesture Controls
+const gestureHandler = {
+    init() {
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            this.handleGesture();
+        });
+    },
+
+    handleGesture() {
+        const THRESHOLD = 50;
+        if (touchendX < touchstartX - THRESHOLD) {
+            // Swipe left action
+            this.navigateNext();
+        }
+        if (touchendX > touchstartX + THRESHOLD) {
+            // Swipe right action
+            this.navigatePrevious();
+        }
+    }
+};
+
+// Initialize UX enhancements
+document.addEventListener('DOMContentLoaded', () => {
+    searchHandler.initSmartSearch();
+    gestureHandler.init();
+    initializeScrollAnimations();
+});
+
+// Scroll Animations
+function initializeScrollAnimations() {
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    elements.forEach(el => scrollObserver.observe(el));
+}
+
+// Add API service
+const apiService = {
+    baseUrl: 'http://localhost:5000/api',
+    
+    async getBibleVerse(book, chapter, verse) {
+        const response = await fetch(
+            `${this.baseUrl}/bible/verse/${book}/${chapter}/${verse}`
+        );
+        return response.json();
+    },
+
+    async trackProgress(bookData) {
+        const response = await fetch(`${this.baseUrl}/study/progress`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookData)
+        });
+        return response.json();
+    },
+
+    async submitPrayerRequest(request) {
+        const response = await fetch(`${this.baseUrl}/prayer/requests`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(request)
+        });
+        return response.json();
+    }
+};
+
+// Add Bible verse API service
+const verseApi = {
+    async getDailyVerse() {
+        const response = await fetch('/api/verses/daily');
+        return response.json();
+    },
+
+    async getVerseByReference(book, chapter, verse) {
+        const response = await fetch(`/api/verses/${book}/${chapter}/${verse}`);
+        return response.json();
+    },
+
+    async searchVerses(query, translation = 'KJV') {
+        const response = await fetch(`/api/verses/search?query=${query}&translation=${translation}`);
+        return response.json();
+    }
+};
+
+// Update verse display
+async function updateDailyVerse() {
+    try {
+        const { verse } = await verseApi.getDailyVerse();
+        document.getElementById('daily-verse').textContent = 
+            `"${verse.text}" - ${verse.reference}`;
+    } catch (error) {
+        console.error('Error fetching daily verse:', error);
+    }
+}
+
+// Add photo upload functionality
+function initializePhotoUpload() {
+    const photoForm = document.getElementById('photoUploadForm');
+    
+    if (photoForm) {
+        photoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(photoForm);
+            
+            try {
+                const response = await fetch('/api/photos/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showSuccessMessage('Photos uploaded successfully');
+                    displayUploadedPhotos(result.files);
+                } else {
+                    showErrorMessage(result.error);
+                }
+            } catch (error) {
+                showErrorMessage('Failed to upload photos');
+            }
+        });
+    }
+}
+
+function displayUploadedPhotos(files) {
+    const galleryContainer = document.querySelector('.gallery-grid');
+    
+    files.forEach(file => {
+        const photoItem = document.createElement('div');
+        photoItem.className = 'gallery-item';
+        photoItem.innerHTML = `
+            <img src="${file.path}" alt="Uploaded photo" loading="lazy">
+            <div class="gallery-caption">Local Upload</div>
+        `;
+        galleryContainer.insertBefore(photoItem, galleryContainer.firstChild);
+    });
+}
+
+// Initialize photo upload
+initializePhotoUpload();
+
+// Frontend API Integration
+const apiClient = {
+    baseUrl: 'http://localhost:5000/api',
+    
+    async getBibleVerse(book, chapter, verse) {
+        const response = await fetch(
+            `${this.baseUrl}/verses/${book}/${chapter}/${verse}`
+        );
+        return response.json();
+    },
+
+    async getDailyVerse() {
+        const response = await fetch(`${this.baseUrl}/verses/daily`);
+        return response.json();
+    },
+
+    async searchVerses(query, translation = 'KJV') {
+        const response = await fetch(
+            `${this.baseUrl}/verses/search?query=${query}&translation=${translation}`
+        );
+        return response.json();
+    }
+};
+
+// Update verse display with API data
+async function updateDailyVerse() {
+    try {
+        const { verse } = await apiClient.getDailyVerse();
+        const verseElement = document.getElementById('daily-verse');
+        verseElement.innerHTML = `
+            <div class="verse-text">"${verse.text}"</div>
+            <div class="verse-reference">- ${verse.reference}</div>
+            <div class="verse-translation">${verse.translation}</div>
+        `;
+    } catch (error) {
+        console.error('Error fetching daily verse:', error);
+        showErrorMessage('Failed to load daily verse');
+    }
+}
+
+// Add verse search functionality
+function initializeVerseSearch() {
+    const searchForm = document.querySelector('.verse-search');
+    if (searchForm) {
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = searchForm.querySelector('input').value;
+            const results = await apiClient.searchVerses(query);
+            displaySearchResults(results);
+        });
+    }
+}
+
+function displaySearchResults(results) {
+    const resultsContainer = document.getElementById('searchResults');
+    if (results.success && results.results.length > 0) {
+        resultsContainer.innerHTML = results.results.map(verse => `
+            <div class="verse-result">
+                <div class="verse-text">"${verse.text}"</div>
+                <div class="verse-reference">- ${verse.reference}</div>
+            </div>
+        `).join('');
+    } else {
+        resultsContainer.innerHTML = '<p>No verses found</p>';
+    }
+}
+
+// Update book content display
+async function showBookContent(book) {
+    try {
+        const chapters = await apiClient.getBibleVerse(book.name, 1, 1);
+        // ...existing showBookContent code...
+    } catch (error) {
+        console.error('Error loading book content:', error);
+        showErrorMessage('Failed to load book content');
+    }
+}
+
+// Initialize frontend integration
+document.addEventListener('DOMContentLoaded', () => {
+    updateDailyVerse();
+    initializeVerseSearch();
+    // Update verse every 24 hours
+    setInterval(updateDailyVerse, 24 * 60 * 60 * 1000);
+});
+
+// Error handling
+function showErrorMessage(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    document.body.appendChild(errorDiv);
+    setTimeout(() => errorDiv.remove(), 3000);
+}
+
+// Dynamic Interface Controller
+const interfaceController = {
+    init() {
+        this.setupDynamicHeaders();
+        this.initializeParallax();
+        this.setupScrollAnimations();
+        this.initializeIntersectionObservers();
+    },
+
+    setupDynamicHeaders() {
+        const headers = document.querySelectorAll('.dynamic-header');
+        headers.forEach(header => {
+            window.addEventListener('scroll', () => {
+                const scroll = window.scrollY;
+                header.style.transform = `translateY(${scroll * 0.5}px)`;
+                header.style.opacity = 1 - (scroll * 0.003);
+            });
+        });
+    },
+
+    initializeParallax() {
+        const parallaxElements = document.querySelectorAll('.parallax');
+        parallaxElements.forEach(element => {
+            const speed = element.dataset.speed || 0.5;
+            window.addEventListener('scroll', () => {
+                const offset = window.scrollY * speed;
+                element.style.transform = `translateY(${offset}px)`;
+            });
+        });
+    },
+
+    setupScrollAnimations() {
+        const animatedElements = document.querySelectorAll('.scroll-animate');
+        const observer = new IntersectionObserver(
+            entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            },
+            { threshold: 0.1 }
+        );
+        animatedElements.forEach(el => observer.observe(el));
+    }
+};
+
+// Initialize dynamic interface
+interfaceController.init();
+
+// Language handling
+const languageHandler = {
+    init() {
+        $('#languageSelect').select2().on('change', this.changeLanguage);
+    },
+
+    async changeLanguage(e) {
+        const lang = e.target.value;
+        const translations = await fetchTranslations(lang);
+        updatePageContent(translations);
+    }
+};
+
+// 3D Bible Lands
+const bible3D = {
+    init() {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        
+        // Initialize 3D environment
+    }
+};
+
+// AI Study Assistant
+const aiAssistant = {
+    init() {
+        const chatInterface = document.querySelector('.ai-chat-interface');
+        this.setupChatInterface(chatInterface);
+    },
+
+    async processQuery(query) {
+        const response = await fetch('/api/ai/study-assistant', {
+            method: 'POST',
+            body: JSON.stringify({ query })
+        });
+        return response.json();
+    }
+};
+
+// Initialize new features
+document.addEventListener('DOMContentLoaded', () => {
+    languageHandler.init();
+    bible3D.init();
+    aiAssistant.init();
+});
+
+// Sliding Window Controller
+const slidingWindowController = {
+    init() {
+        this.window = document.createElement('div');
+        this.window.className = 'sliding-window';
+        this.window.innerHTML = `
+            <div class="sliding-window-content">
+                <div class="sliding-window-header">
+                    <h3>Quick Access</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="sliding-window-tabs">
+                    <div class="sliding-window-tab active" data-tab="notes">Notes</div>
+                    <div class="sliding-window-tab" data-tab="bookmarks">Bookmarks</div>
+                    <div class="sliding-window-tab" data-tab="highlights">Highlights</div>
+                </div>
+                <div class="sliding-window-body"></div>
+            </div>
+        `;
+        
+        document.body.appendChild(this.window);
+        this.setupToggle();
+        this.setupEventListeners();
+    },
+
+    setupToggle() {
+        const toggle = document.createElement('div');
+        toggle.className = 'sliding-window-toggle';
+        toggle.innerHTML = '<i class="fas fa-book"></i>';
+        document.body.appendChild(toggle);
+
+        toggle.addEventListener('click', () => {
+            this.window.classList.toggle('active');
+        });
+    },
+
+    setupEventListeners() {
+        const closeBtn = this.window.querySelector('.close-btn');
+        closeBtn.addEventListener('click', () => {
+            this.window.classList.remove('active');
+        });
+
+        const tabs = this.window.querySelectorAll('.sliding-window-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                this.loadTabContent(tab.dataset.tab);
+            });
+        });
+    },
+
+    loadTabContent(tab) {
+        const content = this.getTabContent(tab);
+        this.window.querySelector('.sliding-window-body').innerHTML = content;
+    },
+
+    getTabContent(tab) {
+        const contents = {
+            notes: `
+                <div class="notes-section">
+                    <textarea placeholder="Add your study notes here..."></textarea>
+                    <button class="save-note-btn">Save Note</button>
+                </div>
+            `,
+            bookmarks: `
+                <div class="bookmarks-section">
+                    <div class="bookmark-list">
+                        ${this.getBookmarks().map(b => `
+                            <div class="bookmark-item">
+                                <span>${b.reference}</span>
+                                <small>${b.date}</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `,
+            highlights: `
+                <div class="highlights-section">
+                    <div class="highlight-list">
+                        ${this.getHighlights().map(h => `
+                            <div class="highlight-item">
+                                <p>${h.text}</p>
+                                <small>${h.reference}</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `
+        };
+        return contents[tab] || '';
+    },
+
+    getBookmarks() {
+        return JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    },
+
+    getHighlights() {
+        return JSON.parse(localStorage.getItem('highlights') || '[]');
+    }
+};
+
+// Initialize sliding window
+document.addEventListener('DOMContentLoaded', () => {
+    slidingWindowController.init();
+});
+
+// Translation Window Controller
+const translationWindow = {
+    init() {
+        this.window = document.querySelector('.translation-window');
+        this.sourceText = document.getElementById('sourceText');
+        this.targetText = document.getElementById('translatedText');
+        this.translateBtn = document.querySelector('.translate-btn');
+        this.copyBtn = document.querySelector('.copy-btn');
+        this.closeBtn = document.querySelector('.close-translation-btn');
+        this.swapBtn = document.querySelector('.swap-language-btn');
+        
+        this.setupEventListeners();
+    },
+
+    setupEventListeners() {
+        this.translateBtn.addEventListener('click', () => this.translate());
+        this.copyBtn.addEventListener('click', () => this.copyTranslation());
+        this.closeBtn.addEventListener('click', () => this.hide());
+        this.swapBtn.addEventListener('click', () => this.swapLanguages());
+        
+        // Auto-translate after brief pause in typing
+        this.sourceText.addEventListener('input', this.debounce(() => this.translate(), 1000));
+    },
+
+    async translate() {
+        const text = this.sourceText.value;
+        const sourceLang = document.getElementById('sourceLanguage').value;
+        const targetLang = document.getElementById('targetLanguage').value;
+
+        if (!text) return;
+
+        try {
+            const translation = await this.getTranslation(text, sourceLang, targetLang);
+            this.targetText.textContent = translation;
+        } catch (error) {
+            console.error('Translation failed:', error);
+        }
+    },
+
+    async getTranslation(text, sourceLang, targetLang) {
+        const response = await fetch('/api/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, sourceLang, targetLang })
+        });
+        const data = await response.json();
+        return data.translation;
+    },
+
+    copyTranslation() {
+        navigator.clipboard.writeText(this.targetText.textContent)
+            .then(() => {
+                this.showToast('Copied to clipboard!');
+            })
+            .catch(err => console.error('Failed to copy:', err));
+    },
+
+    swapLanguages() {
+        const sourceLang = document.getElementById('sourceLanguage');
+        const targetLang = document.getElementById('targetLanguage');
+        [sourceLang.value, targetLang.value] = [targetLang.value, sourceLang.value];
+        this.translate();
+    },
+
+    show() {
+        this.window.classList.add('active');
+    },
+
+    hide() {
+        this.window.classList.remove('active');
+    },
+
+    showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-message';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    },
+
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+};
+
+// Initialize translation window
+document.addEventListener('DOMContentLoaded', () => {
+    translationWindow.init();
+});
+
+// Initialize Bible Guide
+document.addEventListener('DOMContentLoaded', () => {
+    const bibleGuide = new BibleGuide();
+    
+    // Add to global window object for access
+    window.bibleGuide = bibleGuide;
+});
+
+// Initialize Books Guide
+document.addEventListener('DOMContentLoaded', () => {
+    const booksGuide = new BooksGuide();
+    window.booksGuide = booksGuide; // Make it globally accessible if needed
+});
+
+// Initialize Bible Reader
+document.addEventListener('DOMContentLoaded', () => {
+    const bibleReader = new BibleReader();
+    document.querySelector('main').appendChild(bibleReader.container);
+});
+
+// Initialize connection service
+const connectionService = new ConnectionService();
+
+// Add connection status listener
+connectionService.addListener(async (isOnline) => {
+    if (isOnline) {
+        await connectionService.syncData();
+    }
+});
+
+// Add periodic sync
+setInterval(async () => {
+    if (connectionService.online) {
+        await connectionService.syncData();
+    }
+}, 5 * 60 * 1000); // Sync every 5 minutes
+
+// Initialize Bible Sidebar
+document.addEventListener('DOMContentLoaded', () => {
+    const bibleSidebar = new BibleSidebar();
+    
+    // Handle book selection
+    document.addEventListener('bookSelected', (e) => {
+        const bookName = e.detail;
+        // Update other components when book is selected
+        if (window.bibleReader) {
+            window.bibleReader.loadBook(bookName);
+        }
+    });
 });
