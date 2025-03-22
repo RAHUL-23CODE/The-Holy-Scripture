@@ -1218,3 +1218,75 @@ main section:hover {
     color: rgba(255,255,255,0.8);
     font-size: 0.9rem;
 }
+
+.contact-info {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.primary-contact {
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    background: #25d366;
+    color: white;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.primary-contact:hover {
+    transform: translateY(-2px);
+    background: #128c7e;
+    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.2);
+}
+
+.whatsapp-btn.large {
+    font-size: 1.1rem;
+    padding: 1rem 2rem;
+}
+
+.contact-person {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.contact-name {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.email-contact {
+    font-size: 1.1rem;
+    padding: 1rem 2rem;
+    background: #3498db;
+    color: white;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.email-contact:hover {
+    transform: translateY(-2px);
+    background: #2980b9;
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+}

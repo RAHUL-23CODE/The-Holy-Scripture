@@ -253,6 +253,102 @@ bibleDatabase.wordStudy = {
     }
 };
 
+// Add complete book content
+bibleDatabase.old.forEach(book => {
+    // Add book descriptions
+    book.description = {
+        author: getAuthor(book.name),
+        date: getWritingDate(book.name),
+        theme: getMainTheme(book.name),
+        outline: getBookOutline(book.name)
+    };
+
+    // Add key verses
+    book.keyVerses = getKeyVerses(book.name);
+    
+    // Add chapter summaries
+    book.chapterSummaries = Array(book.chapters).fill().map((_, i) => ({
+        chapter: i + 1,
+        summary: getChapterSummary(book.name, i + 1),
+        keyPoints: getChapterKeyPoints(book.name, i + 1)
+    }));
+});
+
+// Helper functions for book data
+function getAuthor(bookName) {
+    const authors = {
+        'Genesis': 'Moses',
+        'Exodus': 'Moses',
+        'Leviticus': 'Moses',
+        'Numbers': 'Moses',
+        'Deuteronomy': 'Moses',
+        'Joshua': 'Joshua',
+        'Judges': 'Samuel',
+        'Ruth': 'Samuel',
+        // Add other books...
+    };
+    return authors[bookName] || 'Unknown';
+}
+
+function getWritingDate(bookName) {
+    const dates = {
+        'Genesis': 'c. 1445-1405 BC',
+        'Exodus': 'c. 1445-1405 BC',
+        // Add other books...
+    };
+    return dates[bookName] || 'Unknown';
+}
+
+function getMainTheme(bookName) {
+    const themes = {
+        'Genesis': 'Creation, Fall, and God\'s plan of redemption',
+        'Exodus': 'Deliverance and establishment of the covenant',
+        // Add other books...
+    };
+    return themes[bookName] || '';
+}
+
+function getBookOutline(bookName) {
+    const outlines = {
+        'Genesis': [
+            { section: 'Creation', chapters: '1-2' },
+            { section: 'The Fall', chapters: '3' },
+            { section: 'Early History', chapters: '4-11' },
+            { section: 'Abraham', chapters: '12-25' },
+            { section: 'Isaac and Jacob', chapters: '26-36' },
+            { section: 'Joseph', chapters: '37-50' }
+        ],
+        // Add other books...
+    };
+    return outlines[bookName] || [];
+}
+
+// Add enhanced search functionality
+bibleDatabase.advancedSearch = function(options) {
+    const { query, testament, book, theme, date } = options;
+    let results = [];
+
+    // Implementation for advanced search
+    return results;
+};
+
+// Add study tools
+bibleDatabase.studyTools = {
+    crossReferences: new Map(),
+    commentary: new Map(),
+    wordStudy: new Map(),
+    maps: new Map(),
+    timelines: new Map()
+};
+
+// Add reading plans
+bibleDatabase.readingPlans = {
+    chronological: [],
+    thematic: [],
+    devotional: [],
+    comprehensive: []
+};
+
 // Export the enhanced database
 if (typeof module !== 'undefined') {
     module.exports = bibleDatabase;
